@@ -434,15 +434,15 @@ const arr2 = [
 ];
 
 var arr = [
-  {day: 1, week: 1, month: 1, year: 1, sym: 'A'}, // count: 1
-  {day: 1, week: 1, month: 1, year: 1, sym: 'A'},
-  {day: 2, week: 1, month: 1, year: 1, sym: 'B'},
-  {day: 2, week: 1, month: 1, year: 1, sym: 'A'},
-  {day: 3, week: 1, month: 1, year: 1, sym: 'C'},
-  {day: 4, week: 1, month: 1, year: 1, sym: 'A'},
-  {day: 5, week: 1, month: 1, year: 1, sym: 'B'},
-  {day: 5, week: 1, month: 1, year: 1, sym: 'C'},
-  {day: 5, week: 1, month: 1, year: 1, sym: 'D'},
+  { day: 1, week: 1, month: 1, year: 1, sym: 'A' }, // count: 1
+  { day: 1, week: 1, month: 1, year: 1, sym: 'A' },
+  { day: 2, week: 1, month: 1, year: 1, sym: 'B' },
+  { day: 2, week: 1, month: 1, year: 1, sym: 'A' },
+  { day: 3, week: 1, month: 1, year: 1, sym: 'C' },
+  { day: 4, week: 1, month: 1, year: 1, sym: 'A' },
+  { day: 5, week: 1, month: 1, year: 1, sym: 'B' },
+  { day: 5, week: 1, month: 1, year: 1, sym: 'C' },
+  { day: 5, week: 1, month: 1, year: 1, sym: 'D' },
 ];
 
 // Example 1 - Groupby property
@@ -455,9 +455,9 @@ var t = _(arr2)
 
 // Example 2 - Groupby multiple properties
 var result = Object.values(arr.reduce((r, o) => {
-  var key = o.day + '|' + o.week + '|' +  o.month + '|' + o.year;
+  var key = o.day + '|' + o.week + '|' + o.month + '|' + o.year;
 
-   if(!r[key]) {
+  if (!r[key]) {
     r[key] = o;
   } else {
     // console.log(r[key]);
@@ -470,18 +470,51 @@ var result = Object.values(arr.reduce((r, o) => {
 // console.log(result);
 
 // Example 3 - Find and update object
-var arr3 = [{id: 1, name: "Person 1"}, {id:2, name:"Person 2"}];
+var arr3 = [{ id: 1, name: "Person 1" }, { id: 2, name: "Person 2" }];
 // Find index by findIndex
-var index = _.findIndex(arr3, {id: 1});
+var index = _.findIndex(arr3, { id: 1 });
 
 // Replace item at index using native splice
-arr3.splice(index, 1, {id: 100, name: 'New Name.'});
+arr3.splice(index, 1, { id: 100, name: 'New Name.' });
 console.log(arr3)
 
 // Cách 2:
-var arr4 = [{id: 1, name: "Person 1"}, {id:2, name:"Person 2"}];
+var arr4 = [{ id: 1, name: "Person 1" }, { id: 2, name: "Person 2" }];
 
-var newArr = arr4.map(a => a.id === 1 
-              ? { id: a.id, name: a.name + " new" } 
-              : a);
+var newArr = arr4.map(a => a.id === 1
+  ? { id: a.id, name: a.name + " new" }
+  : a);
 console.log(newArr);
+
+/**
+ * Javascript - 
+ *   Array multiple groupBy function
+ *   Forked from http://codereview.stackexchange.com/questions/37028/grouping-elements-in-array-by-multiple-properties
+ *
+ * Usage:
+ *   var list = [
+ *     { foo: "bar", id: 1  },
+ *     { foo: "barbar", id: 2  },
+ *     { foo: "bar", id: 1  },
+ *     { foo: "bar", id: 3  },
+ *     { foo: "barbar", id: 2  },
+ *   ];
+ *   
+ *   var newList = list.groupBy(function (item) {
+ *     return [item.id]; 
+ *   });
+ */
+if (!Array.prototype.groupBy) {
+  Array.prototype.groupBy = function(f) {
+    var groups = {};
+    this.forEach(function(o) {
+      var group = JSON.stringify(f(o));
+      groups[group] = groups[group] || [];
+      groups[group].push(o);
+    });
+
+    return Object.keys(groups).map(function(group) {
+      return groups[group];
+    });
+  };
+}
